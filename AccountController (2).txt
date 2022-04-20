@@ -1,0 +1,46 @@
+<template>
+    <lightning-card
+      title="LWC Record Id Example ">
+        <lightning-datatable
+          data={contacts.data}
+          columns={columns}
+          key-field="Id">
+       </lightning-datatable>
+    </lightning-card> 
+</template>
+--------------------------------------------------------------------------------------
+import { LightningElement,track,wire,api } from 'lwc';
+import { getRecord } from 'lightning/uiRecordApi';
+import queryRelatedContacts from'@salesforce/apex/AccountControllerLWC.queryRelatedContact';
+export default class AccountController extends LightningElement {
+    @api recordId;
+    @track columns = [{label:'Account Id',fieldName:'AccountId',type:'text',sortable: true},
+    {label:'First Name',fieldName:'FirstName',type:'text',sortable: true},
+    {label:'Last Name',fieldName:'LastName',type:'text',sortable: true},
+    {label:'Email',fieldName:'Email',type:'email',sortable: true}
+    ];
+    @wire(queryRelatedContacts,{accId:'$recordId'}) contacts;
+
+
+}
+---------------------------------------------------------------------------------------------
+
+public with sharing class AccountControllerLWC {
+    @AuraEnabled(cacheable=True)
+    public static List<contact>queryRelatedContact(String accId ) {
+            return [select Id,FirstName,LastName,Email,Phone,Account.Name 
+            from Contact where AccountID = :accID];
+    }
+}
+---------------------------------------------------------------------------------
+
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>54.0</apiVersion>
+    <isExposed>True</isExposed>
+    <targets>
+        <target>lightning__AppPage</target>
+        <target>lightning__HomePage</target>
+        <target>lightning__RecordPage</target>
+    </targets>
+</LightningComponentBundle>

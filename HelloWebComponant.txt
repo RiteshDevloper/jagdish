@@ -1,0 +1,32 @@
+HTML
+
+
+<template>
+    <lightning-card title="Lightning Web Componant" icon-name="Custom:Custom14">
+        <div class="slds-var-m-around_medium">
+            <h2> {greeting}</h2>
+
+        </div>
+
+
+    </lightning-card>
+</template>
+-------------------------------------------------------------------------------------------------------------------------------------------------------
+CLASS
+
+import { LightningElement } from 'lwc';
+
+export default class HelloWebComponant extends LightningElement {
+    greeting ='Namaste';
+}
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>54.0</apiVersion>
+    <isExposed>true</isExposed>
+    <targets>
+        <target>lightning__AppPage</target>
+        <target>lightning__HomePage</target>
+        <target>lightning__RecordPage</target>
+    </targets>
+</LightningComponentBundle>

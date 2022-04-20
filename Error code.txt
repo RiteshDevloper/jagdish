@@ -1,0 +1,32 @@
+<template>
+  <lightning-card
+  title="LWC RecordId Example">
+  <lightning-datatable data={contacts.data} columns={columns} key-field="id">
+      
+  </lightning-datatable>
+
+  </lightning-card>  
+</template>
+----------------------------------------------------------------------------------------------
+import { LightningElement,api,wire,track } from 'lwc';
+import queryRelatedContact from '@salesforce/apex/AccountConroller.queryRelatedContact'
+export default class AccountConroller extends LightningElement {
+    @api recordId;
+@track columns=[{label:'AccountId',fieldname:'AccountId',type:'text',sortable:'true'},
+{label:'FirstName',fieldname:'FirstName',type:'text',sortable:'true'},
+{label:'LastName',fieldname:'LastName',type:'text',sortable:'true'},
+{label:'Email',fieldname:'Email',type:'text',sortable:'true'}
+];
+
+    @wire(queryRelatedContact,{accId:'$recordId'})
+    contacts;
+}---------------------------------------------------------------------------------------------------------------------------------------
+public with sharing class AccountConroller {
+    @AuraEnabled(cacheable=true)
+    public static List<Contact>queryRelatedContact(String accId){
+
+        return[select id,AccountId,FirstName,LastName,Email,Phone,Account.name from 
+       Contact where AccountId = :accId];
+
+    }
+}

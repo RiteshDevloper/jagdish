@@ -1,0 +1,62 @@
+<template>
+    <lightning-card>
+        <lightning-input
+            type="number"
+            label="Number of Employees"
+            value={numberOfEmployees}
+            onchange={handleChange}>
+        </lightning-input>
+        <lightning-button
+            label="Reset"
+            onclick={reset}>
+        </lightning-button>
+        <template if:true={accounts.data}>
+            <template for:each={accounts.data} for:item="account">
+                 <p key={account.Id}>{account.Name}</p>
+            </template>
+        </template> 
+    </lightning-card>
+</template>
+
+
+-------------------------------------------------------------------------------
+
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>54.0</apiVersion>
+    <isExposed>True</isExposed>
+    <targets>
+        <target>lightning__AppPage</target>
+        <target>lightning__HomePage</target>
+        <target>lightning__RecordPage</target>
+    </targets>
+</LightningComponentBundle>
+
+
+---------------------------------------------------------------------------------------
+
+import { LightningElement ,wire} from 'lwc';
+import queryAccountsByEmployeeNumber from '@salesforce/apex/AccountListLWC.queryAccountsByEmployeeNumber';
+
+export default class Accountsearch1 extends LightningElement {
+
+    numberOfEmployees = null;
+    handleChange(event) {
+        this.numberOfEmployees = event.detail.value;
+    }
+    reset() {
+        this.numberOfEmployees = null;
+    }
+    @wire(queryAccountsByEmployeeNumber, { numberOfEmployees: '$numberOfEmployees' })
+    accounts;  
+}
+
+----------------------------------------------------------------------------------------------------
+
+public with sharing class AccountListLWC {
+    @AuraEnabled(cacheable=True)
+    public static List<Account>queryAccountsByEmployeeNumber(Integer numberOfEmployees ) {
+  return [select Name from account where numberOfEmployees >= :numberOfEmployees ];
+    
+}
+}
